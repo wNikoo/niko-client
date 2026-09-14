@@ -37,9 +37,16 @@ repositories {
 dependencies {
     minecraft("com.mojang:minecraft:$minecraft_version")
     
-    implementation("net.fabricmc:fabric-loader:$loader_version")
-    implementation("net.fabricmc.fabric-api:fabric-api:$fabric_version")
-    implementation("net.fabricmc:fabric-language-kotlin:$fabric_kotlin_version")
+    modImplementation("net.fabricmc:fabric-loader:$loader_version")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabric_version")
+    modImplementation("net.fabricmc:fabric-language-kotlin:$fabric_kotlin_version")
+    
+    // Fabric API modules
+    modImplementation("net.fabricmc.fabric-api:fabric-api-base:$fabric_version")
+    modImplementation("net.fabricmc.fabric-api:fabric-command-api-v2:$fabric_version")
+    modImplementation("net.fabricmc.fabric-api:fabric-key-binding-api-v1:$fabric_version")
+    modImplementation("net.fabricmc.fabric-api:fabric-screen-api-v1:$fabric_version")
+    modImplementation("net.fabricmc.fabric-api:fabric-networking-api-v1:$fabric_version")
     
     testImplementation(kotlin("test"))
 }
