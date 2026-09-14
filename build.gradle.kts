@@ -28,8 +28,8 @@ tasks.withType<JavaCompile>().configureEach {
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    kotlinOptions {
-        jvmTarget = "21"
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
     }
 }
 
@@ -38,14 +38,14 @@ java.targetCompatibility = JavaVersion.VERSION_21
 
 tasks.processResources {
     inputs.property("version", project.version)
-    inputs.property("mod_name", project.property("mod_name"))
-    inputs.property("mod_description", project.property("mod_description"))
+    inputs.property("mod_name", project.property("mod_name").toString())
+    inputs.property("mod_description", project.property("mod_description").toString())
 
     filesMatching("fabric.mod.json") {
         expand(
             "version" to project.version,
-            "mod_name" to project.property("mod_name"),
-            "mod_description" to project.property("mod_description")
+            "mod_name" to project.property("mod_name").toString(),
+            "mod_description" to project.property("mod_description").toString()
         )
     }
 }
@@ -61,9 +61,6 @@ publishing {
         register<MavenPublication>("mavenJava") {
             artifact(tasks.remapJar) {
                 builtBy(tasks.remapJar)
-            }
-            artifact(tasks.sourcesJar) {
-                builtBy(tasks.sourcesJar)
             }
         }
     }
