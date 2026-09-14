@@ -1,22 +1,19 @@
-# Gradle
 .gradle/
 build/
 out/
+run/
 
-# IDE
 .idea/
 .vscode/
 *.iml
 *.iws
 *.ipr
 
-# macOS
 .DS_Store
 
-# Minecraft
-run/
-.minecraft/
+*.class
+*.jar
+*.log
 
-# Environment
-.env
 local.properties
+.env
