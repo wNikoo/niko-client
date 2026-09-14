@@ -56,9 +56,7 @@ tasks.named<Jar>("jar") {
 publishing {
     publications {
         register<MavenPublication>("mavenJava") {
-            artifact(tasks.remapJar) {
-                builtBy(tasks.remapJar)
-            }
+            from(components["java"])
         }
     }
 
