@@ -1,58 +1,55 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
-    id("fabric-loom") version "1.8.10"
-    id("maven-publish")
-    kotlin("jvm") version "2.0.20"
+    id("net.fabricmc.fabric-loom")
+    `maven-publish`
+    kotlin("jvm")
+    idea
 }
 
-base.archivesName.set(project.property("archives_base_name").toString())
-version = project.property("mod_version").toString()
-group = project.property("maven_group").toString()
+idea {
+    module {
+        isDownloadSources = true
+        isDownloadJavadoc = true
+    }
+}
+
+val minecraft_version = project.property("minecraft_version") as String
+val loader_version = project.property("loader_version") as String
+val fabric_kotlin_version = project.property("fabric_kotlin_version") as String
+val mod_version = project.property("mod_version") as String
+val maven_group = project.property("maven_group") as String
+val mod_name = project.property("mod_name") as String
+val fabric_version = project.property("fabric_version") as String
+
+version = mod_version
+group = maven_group
+
+base { archivesName.set(mod_name) }
 
 repositories {
+    maven("https://api.modrinth.com/maven")
+    maven("https://jitpack.io")
     mavenCentral()
-    maven("https://api.modrinth.com/maven") {
-        name = "Modrinth"
-    }
 }
 
 dependencies {
-    minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
-    mappings(loom.officialMojangMappings())
-    modImplementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${project.property("fabric_version")}")
-    modImplementation("net.fabricmc:fabric-language-kotlin:${project.property("fabric_kotlin_version")}")
+    minecraft("com.mojang:minecraft:$minecraft_version")
+    
+    implementation("net.fabricmc:fabric-loader:$loader_version")
+    implementation("net.fabricmc.fabric-api:fabric-api:$fabric_version")
+    implementation("net.fabricmc:fabric-language-kotlin:$fabric_kotlin_version")
+    
+    testImplementation(kotlin("test"))
 }
 
-tasks.withType<JavaCompile>().configureEach {
-    options.release.set(25)
-}
+tasks.withType<JavaCompile>().configureEach { options.release.set(25) }
+tasks.withType<KotlinCompile>().configureEach { compilerOptions { jvmTarget.set(JvmTarget.JVM_25) } }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-    compilerOptions {
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_25)
-    }
-}
-
-java.sourceCompatibility = JavaVersion.VERSION_25
-java.targetCompatibility = JavaVersion.VERSION_25
-
-tasks.processResources {
-    inputs.property("version", project.version)
-    inputs.property("mod_name", project.property("mod_name").toString())
-    inputs.property("mod_description", project.property("mod_description").toString())
-
-    filesMatching("fabric.mod.json") {
-        expand(
-            "version" to project.version,
-            "mod_name" to project.property("mod_name").toString(),
-            "mod_description" to project.property("mod_description").toString()
-        )
-    }
-}
-
-tasks.jar {
+tasks.named<Jar>("jar") {
     from("LICENSE") {
-        rename { "${it}_${base.archivesName.get()}" }
+        rename { "${it}_$mod_name" }
     }
 }
 
@@ -68,8 +65,4 @@ publishing {
     repositories {
         mavenLocal()
     }
-}
-
-tasks.build {
-    dependsOn(tasks.remapJar)
 }
