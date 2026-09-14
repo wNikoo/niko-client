@@ -1,7 +1,7 @@
 package com.nikoo.nikoclient.inventory.model
 
 data class Profile(
-    val name: String,
+    var name: String,
     val slots: MutableMap<Int, ItemMatcher?> = mutableMapOf(),
     var keybind: String? = null
 ) {
